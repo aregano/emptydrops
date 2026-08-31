@@ -87,7 +87,11 @@ class CountMatrix(object):
         self.feature_ids_map = { f.id: f.index for f in feature_ref.feature_defs }
 
         # Cell barcodes
-        bcs = np.array(bcs, dtype='S', copy=False)
+        try:                # edited by aregano to allow for arrowstringbarcodes to be accepted
+            bcs = np.array(bcs, dtype='S', copy=False)
+        except ValueError:
+            # Fall back to copying if zero-copy isn't possible (e.g., ArrowExtensionArray)
+            bcs = np.array(bcs, dtype='S', copy=True)
         bcs.flags.writeable = False
         self.bcs = bcs
         self.bcs_dim, = self.bcs.shape
