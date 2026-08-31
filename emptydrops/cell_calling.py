@@ -15,8 +15,7 @@ from .sgt import sgt_proportions,SimpleGoodTuringError
 # Number of additional barcodes to consider after the initial cell calling
 N_CANDIDATE_BARCODES=20000
 
-# Number of partitions (max number of barcodes to consider for ambient estimation)
-N_PARTITIONS=90000
+
 
 # Drop this top fraction of the barcodes when estimating ambient.
 MAX_OCCUPIED_PARTITIONS_FRAC = 0.5
@@ -218,7 +217,9 @@ NonAmbientBarcodeResult = namedtuple('NonAmbientBarcodeResult',
 def find_nonambient_barcodes(matrix, orig_cell_bcs,
                              min_umi_frac_of_median=MIN_UMI_FRAC_OF_MEDIAN,
                              min_umis_nonambient=MIN_UMIS,
-                             max_adj_pvalue=MAX_ADJ_PVALUE,):
+                             max_adj_pvalue=MAX_ADJ_PVALUE,
+                             n_partitions:int=90000 # Number of partitions (max number of barcodes to consider for ambient estimation)
+                             ):
     """ Call barcodes as being sufficiently distinct from the ambient profile
 
     Args:
@@ -232,7 +233,7 @@ def find_nonambient_barcodes(matrix, orig_cell_bcs,
     bc_order = np.argsort(umis_per_bc)
 
     # Take what we expect to be the barcodes associated w/ empty partitions.
-    empty_bcs = bc_order[::-1][(N_PARTITIONS//2):N_PARTITIONS]
+    empty_bcs = bc_order[::-1][(n_partitions//2):n_partitions]
     empty_bcs.sort()
 
     # Require non-zero barcodes
@@ -288,7 +289,7 @@ def find_nonambient_barcodes(matrix, orig_cell_bcs,
         obs_loglk = np.repeat(np.nan, len(eval_bcs))
         pvalues = np.repeat(1, len(eval_bcs))
         sim_loglk = np.repeat(np.nan, len(eval_bcs))
-        return None
+        # return None # aregano weird to be setting up variables and then returning nothing
 
     # Compute observed log-likelihood of barcodes being generated from ambient RNA
     obs_loglk = eval_multinomial_loglikelihoods(eval_mat, ambient_profile_p)
