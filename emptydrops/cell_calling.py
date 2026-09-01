@@ -292,7 +292,8 @@ def find_nonambient_barcodes(matrix, orig_cell_bcs,
         obs_loglk = np.repeat(np.nan, len(eval_bcs))
         pvalues = np.repeat(1, len(eval_bcs))
         sim_loglk = np.repeat(np.nan, len(eval_bcs))
-        # return None # aregano weird to be setting up variables and then returning nothing
+        print("DEBUG: ambient_profile_p is empty")
+        return None 
 
     # Compute observed log-likelihood of barcodes being generated from ambient RNA
     obs_loglk = eval_multinomial_loglikelihoods(eval_mat, ambient_profile_p)
