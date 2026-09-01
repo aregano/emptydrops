@@ -246,9 +246,10 @@ def find_nonambient_barcodes(matrix, orig_cell_bcs,
         try:
             eval_features, ambient_profile_p = est_background_profile_sgt(matrix.m, use_bcs)
         except SimpleGoodTuringError as e:
-            print(str(e))
+            print(f"DEBUG: SimpleGoodTuringError: {str(e)}")
             return None
     else:
+        print("DEBUG: use_bcs is empty")
         eval_features = np.zeros(0, dtype=int)
         ambient_profile_p = np.zeros(0)
 
@@ -259,6 +260,7 @@ def find_nonambient_barcodes(matrix, orig_cell_bcs,
 
     # No good incoming cell calls
     if orig_cells.sum() == 0:
+        print("DEBUG: No initial cell calls")
         return None
 
     # Look at non-cell barcodes above a minimum UMI count
@@ -277,6 +279,7 @@ def find_nonambient_barcodes(matrix, orig_cell_bcs,
     eval_bcs = np.argsort(ma.masked_array(umis_per_bc, mask=eval_bcs.mask))[0:n_unmasked_bcs][-N_CANDIDATE_BARCODES:]
 
     if len(eval_bcs) == 0:
+        print("DEBUG: No candidate barcodes after filtering")
         return None
 
     assert not np.any(np.isin(eval_bcs, orig_cells))
