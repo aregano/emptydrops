@@ -218,7 +218,8 @@ def find_nonambient_barcodes(matrix, orig_cell_bcs,
                              min_umi_frac_of_median=MIN_UMI_FRAC_OF_MEDIAN,
                              min_umis_nonambient=MIN_UMIS,
                              max_adj_pvalue=MAX_ADJ_PVALUE,
-                             n_partitions:int=90000 # Number of partitions (max number of barcodes to consider for ambient estimation)
+                             n_partitions:int=90000, # Number of partitions (max number of barcodes to consider for ambient estimation)
+                             n_sims:int=1000 # Number of simulations to carry
                              ):
     """ Call barcodes as being sufficiently distinct from the ambient profile
 
@@ -299,7 +300,7 @@ def find_nonambient_barcodes(matrix, orig_cell_bcs,
     obs_loglk = eval_multinomial_loglikelihoods(eval_mat, ambient_profile_p)
 
     # Simulate log likelihoods
-    distinct_ns, sim_loglk = simulate_multinomial_loglikelihoods(ambient_profile_p, umis_per_bc[eval_bcs], num_sims=10000, verbose=True)
+    distinct_ns, sim_loglk = simulate_multinomial_loglikelihoods(ambient_profile_p, umis_per_bc[eval_bcs], num_sims=n_sims, verbose=True)
 
     # Compute p-values
     pvalues = compute_ambient_pvalues(umis_per_bc[eval_bcs], obs_loglk, distinct_ns, sim_loglk)
